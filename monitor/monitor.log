@@ -1,0 +1,10 @@
+2015-05-05 20:00:53,407 [Monitor]    ERROR    monitor is starting....
+2015-05-05 20:00:53,545 [Monitor]    ERROR    ping back.
+2015-05-05 20:00:53,595 [Monitor]    ERROR    loading config...
+2015-05-05 20:00:53,644 [Monitor]    ERROR    loading archive...
+2015-05-05 20:00:53,783 [Monitor]    ERROR    init db
+2015-05-05 20:01:06,599 [Monitor]    ERROR    Traceback (most recent call last):
+  File "F:\rrtmonitor\monitor\monitor.py", line 64, in start
+    time.sleep(30); continue
+KeyboardInterrupt
+
