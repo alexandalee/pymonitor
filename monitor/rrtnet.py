@@ -63,6 +63,10 @@ class RrtProtocol(object):
         self.ApiQuery['head']['sign'] = hashlib.md5(headStrig).hexdigest()
 
 
+    def appendQueryHeader(self, name, value):
+        self.ApiQuery['head'][name] = value
+
+
     def setQueryBody(self):
         """ 设置请求消息体 """
         self.ApiQuery['body']['data'] = json.dumps(self.data)
@@ -151,6 +155,57 @@ def ping():
             return False
 
 
+
+def task():
+    # 从服务端读取特定的命令
+    try:
+        api = RrtProtocol('task')
+        api.getRequestQuery()
+        # print api.ApiUrl
+        req = urllib2.Request(api.ApiUrl)
+        fd = urllib2.urlopen(req, api.Request)
+        info = fd.info()
+        resp = fd.read(int(info['Content-Length']))
+        fd.close()
+        # 解析返回结果
+        api.parseResponse(resp)
+        # print resp
+        data = json.loads(api.getResponseData())
+        # 格式化数据
+        if data:
+            formated = {}
+            formated['id'] = str(data[u'id'])
+            formated['end'] = str(data[u'end'])
+            formated['start'] = str(data[u'start'])
+            return formated
+        return data
+    except:
+        print traceback.format_exc()
+        return False
+
+
+def taskover(dat):
+    # 从服务端读取特定的命令
+    try:
+        print dat
+        api = RrtProtocol('taskover')
+        api.setQueryDataItem(dat)
+        api.getRequestQuery()
+        print api.Request
+        req = urllib2.Request(api.ApiUrl)
+        fd = urllib2.urlopen(req, api.Request)
+        info = fd.info()
+        resp = fd.read(int(info['Content-Length']))
+        fd.close()
+        # 解析返回结果
+        api.parseResponse(resp)
+        data = json.loads(api.getResponseData())
+        return data
+    except:
+        print traceback.format_exc()
+        return False
+
+
 def archive():
         # 获取服务器上存储的最后更新时间
         try:
@@ -183,7 +238,7 @@ def  config():
             resp = fd.read(int(info['Content-Length']))
             fd.close()
             # 解析返回结果
-            # print resp
+            #print resp
             api.parseResponse(resp)
             data = api.getResponseData()
             return data
@@ -192,18 +247,20 @@ def  config():
             return False
 
 
-def send(dat):
-        # 发送数据人人投服务器
+
+def send(dat, include=True):
+        # 发送数据到人人投服务器
         try:
             api = RrtProtocol('send')
+            api.appendQueryHeader('include', include)
             api.setQueryDataItem(dat)
             api.getRequestQuery()
-            api.setQueryDataItem(dat)
             req = urllib2.Request(api.ApiUrl)
             fd = urllib2.urlopen(req, api.Request)
             info = fd.info()
             resp = fd.read(int(info['Content-Length']))
             fd.close()
+            #print resp
             # 解析返回结果
             api.parseResponse(resp)
             data = api.getResponseData()
